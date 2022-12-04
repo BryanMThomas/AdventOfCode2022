@@ -10,12 +10,14 @@ def convertCharToPriority(char): # Convert a character to a priority value
 
 
 sum = 0
-for line in inputFile.readlines():
+for line in inputFile.readlines(): #O(xy)
     #divide content of line in half
     compartment1 = line[:len(line)//2]
     compartment2 = line[len(line)//2:]
+    #put compartment2 in a set
+    compartment2Set = set(compartment2)
     for char in compartment1:
-        if char in compartment2:
+        if char in compartment2Set:
             sum += convertCharToPriority(char)
             break
 print("PART1:",sum)
@@ -31,9 +33,11 @@ while linePointer < len(lines):
     elf1 = lines[linePointer]
     elf2 = lines[linePointer+1]
     elf3 = lines[linePointer+2]
+    elf2Set = set(elf2)
+    elf3Set = set(elf3)
     #find char that is in all 3 lines
     for char in elf1:
-        if char in elf2 and char in elf3:
+        if char in elf2Set and char in elf3Set:
             sum += convertCharToPriority(char)
             break
     linePointer += 3
