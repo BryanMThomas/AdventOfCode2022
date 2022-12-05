@@ -1,5 +1,5 @@
 from collections import deque
-import pandas as pd
+import copy
 
 inputFilePath = "/home/bryanthomas/source/AdventOfCode2022/Day5/input.txt"
 inputFile = open(inputFilePath, "r").readlines()
@@ -22,9 +22,11 @@ for line in inputFile:
             if stackCounter not in stackMap: #new stack
                 stackMap[stackCounter] = deque(crateID[1])
             else: #append to stack 
-                stackMap[stackCounter].append(crateID[1]) #append to the bottom of the stack
+                stackMap[stackCounter].appendleft(crateID[1]) #append to the bottom of the stack
 
-#read rest of file 
+stackMapPart2 = copy.deepcopy(stackMap) #deep copy for part 2 to modify independently
+
+#read rest of file for commands 
 for line in inputFile:
     if(line[0] != "m"): # continue until start of commands
         continue
@@ -32,14 +34,38 @@ for line in inputFile:
     quantity = int(command[1])
     fromStack = int(command[3])
     toStack = int(command[5])
+
+    ## PART 1
     for i in range(quantity):
-        stackMap[toStack].appendleft(stackMap[fromStack].popleft()) #move from top of fromStack to top of toStack
+        crate = stackMap[fromStack].pop()  #move from top of fromStack
+        stackMap[toStack].append(crate) #move to top of toStack
+    ## PART 2
+    loadingZone = deque()
+    for i in range(quantity):
+        crate = stackMapPart2[fromStack].pop() #move from top of fromStack 
+        loadingZone.append(crate) #move to top of loadingZone
+    for i in range(quantity):
+        crate = loadingZone.pop() #move from top of loadingZone
+        stackMapPart2[toStack].append(crate) #move to top of toStack
 
 #get top item of each stack 
-topItems = ""
+topItems1 = ""
+topItems2 = ""
 for i in range(stackCounter):
-    topItems += stackMap[i+1][0]
-print("PART 1:",topItems)
+    topItems1 += stackMap[i+1].pop()
+    topItems2 += stackMapPart2[i+1].pop()
+print("PART 1:",topItems1)
+print("PART 2:",topItems2)
+
+
+
+
+
+
+
+
+
+
 
 
 
